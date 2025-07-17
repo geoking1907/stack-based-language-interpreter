@@ -1,5 +1,15 @@
 read
-read
-mod
-top
+abs
+goto(=0) Gt
+
+Loop:
+push 2
+sub
+goto(=0) Gt
+goto(>0) Loop
+write "odd"
+return
+
+Gt:
+write "even"
 return

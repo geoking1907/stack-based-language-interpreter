@@ -7,14 +7,16 @@
 
 
 class Stack {
-public:
-    int x;
-    std::vector<int> buf = std::vector<int>(x, 0);
+    std::vector<int> buf;
     int sp = -1;
+public:
+    explicit Stack(int size) : buf(size, 0) {}
 
-    void push(const int n) {
-        sp++;
-        buf[sp] = n;
+    void push(int n) {
+        if(sp + 1 >= buf.size()) {
+            throw std::runtime_error("Stack overflow");
+        }
+        buf[++sp] = n;
     }
     int pop() {
         const int n = buf[sp];
@@ -102,7 +104,7 @@ int main(int argc, char *argv[]) {
      */
 
     int pc = 0;
-    Stack stack = Stack(256);
+    Stack stack(256);
 
     while (program[pc] != "return") {
         const std::string& op = program[pc];
