@@ -8,8 +8,8 @@ This C++ program implements a simple stack-based interpreter that reads and exec
 * Stack Operations: `push`, `pop`, `dup`, `swap`, `over`, `rot`, `top` (outputs the top value), `abs`
 * Arithmetic Operations: `add`, `sub`, `mul`, `div`, `mod`
 * I/O Commands: `write` (output strings/values), `read` (input numbers)
-* Control Flow: Conditional jumps (`goto(=0)`, `goto(>0`), `goto(<0)`) and labels
-* Program Structure: Support for labels and line-based execution
+* Control Flow: Conditional jumps (`goto`) and labels
+* Program Structure: Support for labels, vars, comments and line-based execution
 
 ## Supported Instructions
 | **Command**                | **Description**                                                        |
