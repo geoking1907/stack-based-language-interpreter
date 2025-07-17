@@ -52,6 +52,7 @@ int main(int argc, char *argv[]) {
     std::vector<std::string> program;
     int token_counter = 0;
     std::map<std::string, int> label_tracker;
+    std::map<std::string, int> variables;
 
     for (std::string &line : program_lines) {
         std::vector<std::string> parts;
@@ -65,6 +66,11 @@ int main(int argc, char *argv[]) {
         if (opcode.ends_with(":")) {
             std::string newopcode = opcode.substr(0, opcode.length() - 1);
             label_tracker[newopcode] = token_counter;
+            continue;
+        }
+        if (opcode.ends_with("=")) {
+            std::string newopcode = opcode.substr(0, opcode.length() - 1);
+            variables[newopcode] = std::stoi(parts[1]);
             continue;
         }
 
@@ -93,6 +99,14 @@ int main(int argc, char *argv[]) {
             program.emplace_back(label);
             token_counter++;
         } else if (opcode == "goto(>0)") {
+            const std::string& label = parts[1];
+            program.emplace_back(label);
+            token_counter++;
+        } else if (opcode == "get") {
+            const std::string& label = parts[1];
+            program.emplace_back(label);
+            token_counter++;
+        } else if (opcode == "chvar") {
             const std::string& label = parts[1];
             program.emplace_back(label);
             token_counter++;
@@ -182,6 +196,12 @@ int main(int argc, char *argv[]) {
             int number = stack.top();
             if (number < 0) { pc = label_tracker[program[pc]]; }
             else { pc++; }
+        } else if (op == "get") {
+            int number = variables[program[pc]];
+            stack.push(number);
+        } else if (op == "chvar") {
+            int number = stack.top();
+            variables[program[pc]] = number;
         } else if (op == "top") {
             int number = stack.top();
             std::cout << number << std::endl;
