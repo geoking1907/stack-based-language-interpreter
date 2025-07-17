@@ -12,43 +12,37 @@ This C++ program implements a simple stack-based interpreter that reads and exec
 * Program Structure: Support for labels and line-based execution
 
 ## Supported Instructions
-| **Command**                 | **Description**                                              |
-|-----------------------------|--------------------------------------------------------------|
-| push `N`                    | Push integer `N` onto the stack                              |
-| pop	                        | Remove top element from stack                                |
-| dup	                        | Duplicate top stack element                                  |
-| swap	                       | Swap top two stack elements                                  |
-| over	                       | Copy second stack element to top                             |
-| rot	                        | Rotate top three elements (`c, b, a` → `b, a, c`)            |
-| abs	                        | Replace top element with its absolute value                  |
-| add / sub / mul / div / mod | Arithmetic operations (uses top two elements)                |
-| write `STR`	                | Output string `STR` (supports multi-word strings)            |
-| read	                       | Read integer from `stdin` and push to stack                  |
-| top	                        | Print top element without popping                            |
-| goto(=0) `L`                | Jump to label `L` if top element `= 0`                       |
-| goto(>0) `L`                | Jump to label `L` if top element `> 0`                       |
-| goto(<0) `L`                | Jump to label `L` if top element `< 0`                       |
-| return	                     | Terminate program execution                                  |
-| `L`:	                     | Define jump target (must end with colon)                     |
-| get `_L`                    | Getting the value of the variable `_L`                       |
-| chvar `_L`                  | Changing the value of the variable `_L` to the `stack.top()` |
-
+| **Command**                | **Description**                                                        |
+|----------------------------|------------------------------------------------------------------------|
+| push `N`                   | Push integer `N` onto the stack                                        |
+| pop	                       | Remove top element from stack                                          |
+| dup	                       | Duplicate top stack element                                            |
+| swap	                      | Swap top two stack elements                                            |
+| over	                      | Copy second stack element to top                                       |
+| rot	                       | Rotate top three elements (`c, b, a` → `b, a, c`)                      |
+| abs	                       | Replace top element with its absolute value                            |
+| add / sub / mul / div / mod | Arithmetic operations (uses top two elements)                          |
+| write `STR`	               | Output string `STR` (supports multi-word strings)                      |
+| read	                      | Read integer from `stdin` and push to stack                            |
+| top	                       | Print top element without popping                                      |
+| goto `sign` `value` `L`    | Jump to label `L` if top element is `<, >, <=, >=, = or !=` to `value' |
+| return	                    | Terminate program execution                                            |
+| `L`:	                      | Define jump target (must end with colon)                               |
+| get `_L`                   | Getting the value of the variable `_L`                                 |
+| chvar `_L`                 | Changing the value of the variable `_L` to the `stack.top()`           |
+| // `comment`               | Comments                                                               |
 ## Usage
 1. Compile the program
 2. Create a program file (e.g., `program.ssb`):
 ```ssb
 read
-abs
-goto(=0) Gt
-
-Loop:
-var _EVEN
-sub
-goto(=0) Gt
-goto(>0) Loop
+get _EVEN
+mod
+goto = 0 Gt
 write "odd"
 return
 
+// runs only when top is equal to 0
 Gt:
 write "even"
 return

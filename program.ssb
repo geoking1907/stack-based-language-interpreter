@@ -1,15 +1,11 @@
 read
-abs
-goto(=0) Gt
-
-Loop:
 get _EVEN
-sub
-goto(=0) Gt
-goto(>0) Loop
+mod
+goto = 0 Gt
 write "odd"
 return
 
+// runs only when top is equal to 0
 Gt:
 write "even"
 return

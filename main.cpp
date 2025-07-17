@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
         while (getline(ss, t, del)) { parts.push_back(t); }
         std::string opcode = parts[0];
 
-        if (opcode.empty()) { continue; }
+        if (opcode.empty() or opcode.starts_with("//")) { continue; }
         if (opcode.ends_with(":")) {
             std::string newopcode = opcode.substr(0, opcode.length() - 1);
             label_tracker[newopcode] = token_counter;
@@ -90,17 +90,15 @@ int main(int argc, char *argv[]) {
             }
             program.emplace_back(string_literal);
             token_counter++;
-        } else if (opcode == "goto(=0)") {
-            const std::string& label = parts[1];
+        } else if (opcode == "goto") {
+            const std::string& sign = parts[1];
+            const std::string& val = parts[2];
+            const std::string& label = parts[3];
+            program.emplace_back(sign);
+            program.emplace_back(val);
             program.emplace_back(label);
             token_counter++;
-        } else if (opcode == "goto(>0)") {
-            const std::string& label = parts[1];
-            program.emplace_back(label);
             token_counter++;
-        } else if (opcode == "goto(>0)") {
-            const std::string& label = parts[1];
-            program.emplace_back(label);
             token_counter++;
         } else if (opcode == "get") {
             const std::string& label = parts[1];
@@ -131,8 +129,7 @@ int main(int argc, char *argv[]) {
         } else if (op == "pop") {
             stack.pop();
         } else if (op == "abs") {
-            int a = stack.pop();
-            if (a < 0) { stack.push(-a); }
+            if (int a = stack.pop(); a < 0) { stack.push(-a); }
             else { stack.push(a); }
         } else if (op == "dup") {
             int a = stack.pop();
@@ -184,18 +181,29 @@ int main(int argc, char *argv[]) {
             int number;
             std::cin >> number;
             stack.push(number);
-        } else if (op == "goto(=0)") {
-            int number = stack.top();
-            if (number == 0) { pc = label_tracker[program[pc]]; }
-            else { pc++; }
-        } else if (op == "goto(>0)") {
-            int number = stack.top();
-            if (number > 0) { pc = label_tracker[program[pc]]; }
-            else { pc++; }
-        } else if (op == "goto(<0)") {
-            int number = stack.top();
-            if (number < 0) { pc = label_tracker[program[pc]]; }
-            else { pc++; }
+        } else if (op == "goto") {
+            const std::string& sign = program[pc];
+            int val = std::stoi(program[pc + 1]);
+            int a = stack.top();
+            if (sign == "<") {
+                if (a < val) { pc = label_tracker[program[pc + 2]]; }
+                else { pc++; }
+            } else if (sign == ">") {
+                if (a > val) { pc = label_tracker[program[pc + 2]]; }
+                else { pc++; }
+            } else if (sign == "=") {
+                if (a == val) { pc = label_tracker[program[pc + 2]]; }
+                else { pc++; }
+            } else if (sign == ">=") {
+                if (a >= val) { pc = label_tracker[program[pc + 2]]; }
+                else { pc++; }
+            } else if (sign == "<=") {
+                if (a <= val) { pc = label_tracker[program[pc + 2]]; }
+                else { pc++; }
+            } else if (sign == "!=") {
+                if (a != val) { pc = label_tracker[program[pc + 2]]; }
+                else { pc++; }
+            }
         } else if (op == "get") {
             int number = variables[program[pc]];
             stack.push(number);
